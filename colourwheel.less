@@ -1,0 +1,103 @@
+
+/* declare variables */
+
+@unit           : 15px; // base size for everything
+@wheel-speed    : 1000ms; // how long to draw a wheel
+@wheel-delay    : 300ms; // how long to wait between drawing 1st / 2nd / 3rd wheels
+@wheel-spacing  : 0.2 * @unit; // gap between wheels
+@wheel-size     : 7 * @unit; // Wheel size
+
+/* Basic LESS calculation in css */
+h1 {
+  font-size: (2 * @unit);
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  text-align: center;
+}
+
+/* Base line styles */
+
+.line {
+  .dot-size(@unit, 0);
+}
+
+/* use a mixin */
+.wrapper {
+  .transform(translate3d(3 * @unit, @wheel-size, 0px))
+}
+
+/* Declare x-browser mixins */
+.transform(@rules){
+  -webkit-transform: @rules;
+  -moz-transform: @rules;
+  transform: @rules;
+}
+
+.transition(@rules){
+  -webkit-transition: @rules;
+  -moz-transition: @rules;
+  transition: @rules;
+}
+
+.transform-origin(@rules){
+  -webkit-transform-origin: @rules;
+  -moz-transform-origin: @rules;
+  transform-origin: @rules;
+}
+
+/* Declare functional mixins */
+.reveal(@delay){
+  opacity: 1;
+  .transition(opacity 400ms ease-in-out @delay); // use mixin for browser prefix
+}
+
+.dot-size(@size, @offset-factor){
+  top: 0;
+  left: @offset-factor * (@unit + @wheel-spacing);;
+  position: absolute;
+  opacity: 0;
+  height : @size;
+  width : @size;
+  border-radius: @size * 0.5;
+}
+
+/* Basic iteration mixin */
+.loop(@counter) when (@counter > 0) {
+
+  .loop((@counter - 1));    // next iteration
+
+  .line:nth-child(@{counter}){
+    background-color: hsla((0deg + 10 * @counter), 100%, 50%, 100%);
+    .transform-origin((@wheel-size) 0 0);
+    .transform(translate3d(0px, 0px, 0px) rotate(80deg + 10deg * @counter));
+
+    @dot-delay : @wheel-speed * (@counter / 36);
+
+    // Build the lighter wheel
+    &:before{
+      content : ' ';
+      .dot-size(@unit * 0.8, 1);
+      background-color: hsla((0deg + 10 * @counter), 100%, 70%, 100%);
+      .animate &{
+        .reveal(@wheel-speed + @wheel-delay + @dot-delay); // use mixin for browser prefix
+      }
+    }
+
+    // Build the lightest wheel
+    &:after{
+      content : ' ';
+      .dot-size(@unit * 0.6, 1.8);
+      background-color: hsla((0deg + 10 * @counter), 100%, 85%, 100%);
+      .animate &{
+        .reveal(2 * (@wheel-speed + @wheel-delay) + @dot-delay); // use mixin for browser prefix
+      }
+    }
+
+    .animate &{
+      .reveal(@dot-delay); // use mixin for browser prefix
+    }
+
+  }
+
+}
+
+.loop(36); // launch the loop
