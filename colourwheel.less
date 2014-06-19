@@ -5,7 +5,7 @@
 @wheel-speed    : 1000ms; // how long to draw a wheel
 @wheel-delay    : 300ms; // how long to wait between drawing 1st / 2nd / 3rd wheels
 @wheel-spacing  : 0.2 * @unit; // gap between wheels
-@wheel-size     : 7 * @unit; // Wheel size
+@wheel-size     : 45vw; // Wheel size
 
 /* Basic LESS calculation in css */
 h1 {
@@ -17,12 +17,13 @@ h1 {
 /* Base line styles */
 
 .line {
+  margin-left: 0.5 * @unit;
   .dot-size(@unit, 0);
 }
 
 /* use a mixin */
 .wrapper {
-  .transform(translate3d(3 * @unit, @wheel-size, 0px))
+  .transform(translate3d(2.5vw, @wheel-size, 0px))
 }
 
 /* Declare x-browser mixins */
@@ -52,7 +53,7 @@ h1 {
 
 .dot-size(@size, @offset-factor){
   top: 0;
-  left: @offset-factor * (@unit + @wheel-spacing);;
+  left: @offset-factor * (@unit + @wheel-spacing);
   position: absolute;
   opacity: 0;
   height : @size;
